@@ -153,7 +153,7 @@ class Camera:
             self._comm.send(Workers.WORKER,
                             StateMachine.CameraEvent('capture', byte_data))
 
-        if state.num_picture < self._pic_dims.totalNumPictures:
+        if state.num_picture < 4:
             self._comm.send(Workers.MASTER,
                             StateMachine.CameraEvent('countdown'))
         else:
@@ -165,10 +165,11 @@ class Camera:
         self.setIdle()
 
         picture = self._template.copy()
-        for i in range(self._pic_dims.totalNumPictures):
+        for i in range(4):
             shot = Image.open(self._pictures[i])
             resized = shot.resize(self._pic_dims.thumbnailSize)
-            picture.paste(resized, self._pic_dims.thumbnailOffset[i])
+            picture.paste(resized, self._pic_dims.thumbnailOffset[2 * i])
+            picture.paste(resized, self._pic_dims.thumbnailOffset[2 * i + 1])
 
         byte_data = BytesIO()
         picture.save(byte_data, format='jpeg')

@@ -111,7 +111,7 @@ class GreeterMessage(QtWidgets.QFrame):
         self._text_title = _('Get ready!')
         self._text_button = _('Start countdown')
 
-        num_pictures = max(num_x * num_y - len(skip), 1)
+        num_pictures = 4
         if num_pictures > 1:
             self._text_label = _('for {} pictures...').format(num_pictures)
         else:
@@ -143,7 +143,7 @@ class CaptureMessage(QtWidgets.QFrame):
         super().__init__()
         self.setObjectName('PoseMessage')
 
-        num_pictures = max(num_x * num_y - len(skip), 1)
+        num_pictures = 4
         if num_pictures > 1:
             self._text = _('Picture {} of {}...').format(num_picture,
                                                          num_pictures)
