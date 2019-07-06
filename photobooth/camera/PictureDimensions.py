@@ -47,19 +47,13 @@ class PictureDimensions:
 
     def _computeResizeFactor(self, coord, inner_size):
 
-        return ((inner_size - (self.numPictures[coord] + 1) *
+        return ((inner_size - (self.numPictures[coord] - 1) *
                  self.innerDistance[coord]) /
                 (self.numPictures[coord] * self.captureSize[coord]))
 
-    def _computeThumbOffset(self, coord, inner_size):
-
-        return (inner_size - self.numPictures[coord] *
-                self.thumbnailSize[coord]) // (self.numPictures[coord] + 1)
-
     def computeThumbnailDimensions(self):
 
-        border = tuple(self.outerDistance[i] - self.innerDistance[i]
-                       for i in range(2))
+        border = tuple(self.outerDistance)
         inner_size = tuple(self.outputSize[i] - 2 * border[i]
                            for i in range(2))
 
@@ -68,18 +62,13 @@ class PictureDimensions:
         self._thumb_size = tuple(int(self.captureSize[i] * resize_factor)
                                  for i in range(2))
 
-        thumb_dist = tuple(self._computeThumbOffset(i, inner_size[i])
-                           for i in range(2))
-
         thumbs = [i for i in range(self.numPictures[0] * self.numPictures[1])
                   if i + 1 not in self._skip]
 
         self._thumb_offsets = []
         for i in thumbs:
             pos = (i % self.numPictures[0], i // self.numPictures[0])
-            self._thumb_offsets.append(tuple(border[j] +
-                                             (pos[j] + 1) * thumb_dist[j] +
-                                             pos[j] * self.thumbnailSize[j]
+            self._thumb_offsets.append(tuple(border[j] + (pos[j] * (self._thumb_size[j] + inner_size[j]))
                                              for j in range(2)))
 
         logging.debug(('Assembled picture will contain {} ({}x{}) pictures '
